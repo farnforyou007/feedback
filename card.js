@@ -1,6 +1,6 @@
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbwb7SuSZszPyorEu8106QfEylzNs7EZyFWhQ2qANJXDamkL2MSCkALTIgqsRZoiD2c/exec';
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbwb7SuSZszPyorEu8106QfEylzNs7EZyFWhQ2qANJXDamkL2MSCkALTIgqsRZoiD2c/exec';
 const postIdInput = document.getElementById('post-username');
 const searchParams = new URLSearchParams(window.location.search);
 
