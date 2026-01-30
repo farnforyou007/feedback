@@ -285,69 +285,63 @@
 //         console.log("ID ผู้ถูกประเมินที่ตั้งค่า:", postIdInput.value); // เช็กใน Console ว่าค่ามาไหม
 //     }
 // }
-
-const API_URL = 'https://script.google.com/macros/s/AKfycbwb7SuSZszPyorEu8106QfEylzNs7EZyFWhQ2qANJXDamkL2MSCkALTIgqsRZoiD2c/exec';
-const searchParams = new URLSearchParams(window.location.search);
-
 const SUPABASE_URL = 'https://yzegultmfbdwunocrraf.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl6ZWd1bHRtZmJkd3Vub2NycmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk3MjYwODksImV4cCI6MjA4NTMwMjA4OX0.UAri00e0ZwsGRVx_-ONmG93c_51c7oHaZOcT49N0D5E';
+const searchParams = new URLSearchParams(window.location.search);
 
 (function () {
     'use strict';
-    var forms = document.querySelectorAll('.needs-validation');
-    Array.prototype.slice.call(forms).forEach(function (form) {
-        form.addEventListener('submit', function (event) {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            } else {
-                event.preventDefault();
+    const form = document.getElementById('dataForm');
 
-                // ดึงค่า ID จาก input ที่เรามั่นใจว่าไม่โดนลบ
-                const postIdInput = document.getElementById('post-username');
-                
-                if (!postIdInput || !postIdInput.value) {
-                    Swal.fire({ title: 'Error!', text: 'ไม่พบไอดีผู้ถูกประเมิน กรุณารีโหลดหน้าเว็บ', icon: 'error' });
-                    return;
-                }
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        
+        // ตรวจสอบการกรอกข้อมูลเบื้องต้น
+        if (!form.checkValidity()) {
+            event.stopPropagation();
+            form.reportValidity();
+            return;
+        }
 
-                const dataToSupabase = {
-                    datetime: new Date().toISOString(),
-                    name: postIdInput.value,
-                    type: document.getElementById('type').value,
-                    speed: parseInt(document.querySelector('input[name="speed"]:checked').value),
-                    accuracy: parseInt(document.querySelector('input[name="accuracy"]:checked').value),
-                    service: parseInt(document.querySelector('input[name="service"]:checked').value),
-                    comment: document.getElementById('comment').value
-                };
+        const postIdInput = document.getElementById('post-username');
+        if (!postIdInput || !postIdInput.value) {
+            Swal.fire({ title: 'Error!', text: 'ไม่พบไอดีผู้ถูกประเมิน กรุณารีโหลดหน้าเว็บ', icon: 'error' });
+            return;
+        }
 
-                Swal.fire({
-                    title: 'ส่งข้อมูล...',
-                    text: 'กรุณารอสักครู่กำลังส่งข้อมูลของคุณ.',
-                    allowOutsideClick: false,
-                    didOpen: () => { Swal.showLoading(); }
-                });
+        const dataToSupabase = {
+            datetime: new Date().toISOString(),
+            name: postIdInput.value,
+            type: document.getElementById('type').value,
+            speed: parseInt(document.querySelector('input[name="speed"]:checked')?.value || 0),
+            accuracy: parseInt(document.querySelector('input[name="accuracy"]:checked')?.value || 0),
+            service: parseInt(document.querySelector('input[name="service"]:checked')?.value || 0),
+            comment: document.getElementById('comment').value
+        };
 
-                axios.post(`${SUPABASE_URL}/rest/v1/evaluation_results`, dataToSupabase, {
-                    headers: {
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": `Bearer ${SUPABASE_KEY}`,
-                        "Content-Type": "application/json",
-                        "Prefer": "return=minimal"
-                    }
-                })
-                .then(response => {
-                    Swal.fire({ title: 'บันทึกสำเร็จ!', text: 'ขอบคุณสำหรับการประเมินครับ', icon: 'success' });
-                    document.getElementById("dataForm").reset();
-                    form.classList.remove('was-validated');
-                })
-                .catch(error => {
-                    Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
-                });
+        Swal.fire({
+            title: 'ส่งข้อมูล...',
+            text: 'กรุณารอสักครู่กำลังส่งข้อมูลของคุณ.',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        axios.post(`${SUPABASE_URL}/rest/v1/evaluation_results`, dataToSupabase, {
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
             }
-            form.classList.add('was-validated');
-        }, false);
-    });
+        })
+        .then(response => {
+            Swal.fire({ title: 'บันทึกสำเร็จ!', text: 'ขอบคุณสำหรับการประเมินครับ', icon: 'success' });
+            form.reset();
+        })
+        .catch(error => {
+            Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
+        });
+    }, false);
 
     fetchData();
 })();
@@ -361,7 +355,6 @@ function fetchData() {
         .then(response => {
             if (response.data.length > 0) {
                 displayData(response.data);
-                Swal.close();
             } else {
                 Swal.fire({ title: 'Error!', text: 'ไม่พบข้อมูลผู้ถูกประเมิน', icon: 'error' });
             }
@@ -381,18 +374,14 @@ function displayData(posts) {
     const postIdInput = document.getElementById('post-username');
     const post = posts[0];
 
-    // แก้ไขรูปภาพ
     if (postImage) {
-        postImage.src = post.image || 'https://www.ttmed.psu.ac.th/th/static/images/staff/new.jpg';
-        postImage.classList.add('object-cover'); // ย้ำว่าให้รูปเต็มวงกลม
+        postImage.src = post.image || 'https://www.ttmed.psu.ac.th/th/staff/images/staff/new.jpg';
     }
 
-    // แก้ไข ID ผู้ถูกประเมิน
     if (postIdInput) {
         postIdInput.value = post.fullname;
     }
 
-    // แสดงชื่อและตำแหน่ง (ใช้ innerHTML แทน เพื่อไม่ให้ข้อมูลซ้ำซ้อน)
     container.innerHTML = `
         <h2 class="text-xl font-bold text-gray-800 leading-tight">${post.fullname}</h2>
         <p class="text-sm text-gray-500 mt-1">${post.position || ''}</p>
