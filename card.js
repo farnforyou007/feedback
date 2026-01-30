@@ -235,30 +235,56 @@ function fetchData() {
 }
 
 
+// function displayData(posts) {
+//     const container = document.getElementById('data-container');
+//     const postImage = document.getElementById('post-image');
+
+
+//     // ใช้ข้อมูลของ post แรก (หรือเลือก post ใดก็ได้)
+//     const post = posts[0];
+
+//     // กำหนดค่าให้กับ image tag
+//     postImage.src = post.image;
+//     postImage.alt = post.title;
+
+//     // กำหนดค่าให้กับ hidden input tag
+//     postIdInput.value = post.fullname;
+
+//     // หากต้องการแสดงข้อมูลอื่นๆ เช่น title และ body
+//     // container.insertAdjacentHTML('beforeend', `
+//     //     <span class="fs-5 fw-bold">${post.fullname}</span>
+//     //     <p class="fs-6 text-black-50">${post.position}</p>
+//     // `);
+//     // เปลี่ยนจากแบบเดิม เป็นแบบนี้เพื่อให้เข้ากับดีไซน์ใหม่
+//     container.insertAdjacentHTML('beforeend', `
+//     <h2 class="text-xl font-bold text-gray-800">${post.fullname}</h2>
+//     <p class="text-sm text-gray-500">${post.position}</p>
+// `);
+// }
+
 function displayData(posts) {
     const container = document.getElementById('data-container');
     const postImage = document.getElementById('post-image');
+    // อ้างอิง input ใหม่อีกครั้งภายในฟังก์ชันเพื่อความแม่นยำ
+    const postIdInput = document.getElementById('post-username');
 
-
-    // ใช้ข้อมูลของ post แรก (หรือเลือก post ใดก็ได้)
     const post = posts[0];
 
-    // กำหนดค่าให้กับ image tag
+    // 1. ใส่รูป
     postImage.src = post.image;
-    postImage.alt = post.title;
+    postImage.alt = post.fullname;
 
-    // กำหนดค่าให้กับ hidden input tag
-    postIdInput.value = post.fullname;
+    // 2. ล้างค่าเก่าใน container (ป้องกันการเบิ้ล) และใส่ชื่อ/ตำแหน่ง
+    // หมายเหตุ: ถ้าใน HTML คุณมี input อยู่ในนี้ มันจะหายไป ดังนั้นควรเอา input ไว้ข้างนอก container ครับ
+    container.innerHTML = `
+        <h2 class="text-xl font-bold text-gray-800">${post.fullname}</h2>
+        <p class="text-sm text-gray-500">${post.position}</p>
+    `;
 
-    // หากต้องการแสดงข้อมูลอื่นๆ เช่น title และ body
-    // container.insertAdjacentHTML('beforeend', `
-    //     <span class="fs-5 fw-bold">${post.fullname}</span>
-    //     <p class="fs-6 text-black-50">${post.position}</p>
-    // `);
-    // เปลี่ยนจากแบบเดิม เป็นแบบนี้เพื่อให้เข้ากับดีไซน์ใหม่
-    container.insertAdjacentHTML('beforeend', `
-    <h2 class="text-xl font-bold text-gray-800">${post.fullname}</h2>
-    <p class="text-sm text-gray-500">${post.position}</p>
-`);
+    // 3. กำหนดค่า ID ผู้ถูกประเมิน (ทำหลังจากจัดการ HTML ด้านบนเสร็จ)
+    if (postIdInput) {
+        postIdInput.value = post.fullname; 
+        console.log("ID ผู้ถูกประเมินที่ตั้งค่า:", postIdInput.value); // เช็กใน Console ว่าค่ามาไหม
+    }
 }
 
