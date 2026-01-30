@@ -326,7 +326,7 @@ const searchParams = new URLSearchParams(window.location.search);
             didOpen: () => { Swal.showLoading(); }
         });
 
-        axios.post(`${SUPABASE_URL}/rest/v1/evaluation_results`, dataToSupabase, {
+        axios.post(`${SUPABASE_URL}/rest/v1/data`, dataToSupabase, {
             headers: {
                 "apikey": SUPABASE_KEY,
                 "Authorization": `Bearer ${SUPABASE_KEY}`,
