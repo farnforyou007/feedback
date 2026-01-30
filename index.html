@@ -93,7 +93,6 @@
 
 </html> -->
 
-
 <!DOCTYPE html>
 <html lang="th">
 
@@ -111,6 +110,7 @@
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             --glass-bg: rgba(255, 255, 255, 0.95);
+            --star-color: #ffc107;
         }
 
         body {
@@ -131,9 +131,9 @@
             max-width: 450px;
             overflow: hidden;
             border: 1px solid rgba(255,255,255,0.3);
-            transition: transform 0.3s ease;
         }
 
+        /* แก้ไขรูปวงกลม */
         .profile-section {
             padding: 40px 20px 20px;
             background: white;
@@ -141,77 +141,61 @@
         }
 
         .circle-image {
-            width: 120px;
-            height: 120px;
+            width: 130px; /* ปรับขนาดให้ชัดเจน */
+            height: 130px;
             margin: 0 auto 15px;
             border-radius: 50%;
-            border: 4px solid #fff;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border: 5px solid #fff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .circle-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: cover; /* ป้องกันรูปเบี้ยว */
         }
 
-        .info-badge {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 1.2rem;
-            color: #adb5bd;
-            transition: color 0.3s;
-        }
-
-        .info-badge:hover { color: #667eea; }
-
-        .form-section {
-            padding: 0 30px 40px;
-        }
-
+        /* สไตล์การให้คะแนนแบบดาว */
         .rating-group {
             background: #f8f9fa;
             border-radius: 16px;
             padding: 15px;
             margin-bottom: 15px;
+            text-align: center;
         }
 
         .rating-title {
             font-weight: 600;
             color: #495057;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             font-size: 1rem;
         }
 
-        /* Modern Rating Buttons */
-        .rating-options {
+        .star-rating {
             display: flex;
-            justify-content: space-between;
-            gap: 8px;
+            flex-direction: row-reverse; /* เพื่อให้เลือกจากซ้ายไปขวาได้ถูกต้องใน CSS */
+            justify-content: center;
+            gap: 5px;
         }
 
-        .rating-options input { display: none; }
+        .star-rating input { display: none; }
 
-        .rating-options label {
-            flex: 1;
-            padding: 10px;
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 12px;
+        .star-rating label {
+            font-size: 2rem;
+            color: #dee2e6;
             cursor: pointer;
-            transition: all 0.2s;
-            font-weight: 600;
-            color: #adb5bd;
+            transition: color 0.2s ease-in-out;
         }
 
-        .rating-options input:checked + label {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-            transform: translateY(-2px);
+        /* เมื่อ Hover หรือ Checked ให้เป็นสีทอง */
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: var(--star-color);
         }
 
         .form-select, .form-control {
@@ -227,8 +211,6 @@
             border-radius: 12px;
             padding: 14px;
             font-weight: 600;
-            letter-spacing: 0.5px;
-            box-shadow: 0 8px 16px rgba(118, 75, 162, 0.3);
             width: 100%;
             color: white;
             transition: all 0.3s;
@@ -238,6 +220,14 @@
             transform: translateY(-2px);
             box-shadow: 0 12px 20px rgba(118, 75, 162, 0.4);
         }
+
+        .info-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.2rem;
+            color: #adb5bd;
+        }
     </style>
 </head>
 
@@ -245,8 +235,7 @@
     <div class="main-card">
         <form id="dataForm" class="needs-validation" novalidate>
             <div class="profile-section text-center">
-                <a href="https://script.google.com/macros/s/AKfycbxAZ9JoTub-rvwtGEKxCPVyOUHvPTKcrEnQLFx2U5BtEeJiQAwTQ2kSIzN_WyI2U35w/exec" 
-                   class="info-badge" target="_blank">
+                <a href="https://script.google.com/macros/s/..." class="info-badge" target="_blank">
                     <i class="bi bi-info-circle-fill"></i>
                 </a>
                 
@@ -256,67 +245,59 @@
                 
                 <div id="data-container">
                     <input type="hidden" id="post-username" value="">
-                    </div>
+                </div>
             </div>
 
-            <div class="form-section">
-                <select class="form-select mb-4" id="type" name="type" required>
+            <div class="form-section p-4">
+                <select class="form-select mb-3" id="type" name="type" required>
                     <option selected disabled value="">ระบุสถานะผู้ทำแบบประเมิน</option>
-                    <option value="นักศึกษาปริญญาตรี">นักศึกษาปริญญาตรี</option>
-                    <option value="นักศึกษาบัณฑิตศึกษา">นักศึกษาบัณฑิตศึกษา</option>
-                    <option value="อาจารย์">อาจารย์</option>
-                    <option value="นักวิทยาศาสตร์">นักวิทยาศาสตร์</option>
-                    <option value="บุคลากรสํานักงานบริหารคณะ">บุคลากรสํานักงานบริหารคณะ</option>
-                    <option value="บุคลากรโรงพยาบาล">บุคลากรโรงพยาบาล</option>
-                    <option value="ผู้ใช้บริการโรงพยาบาล">ผู้ใช้บริการโรงพยาบาล</option>
+                    <option value="นักศึกษา">นักศึกษา</option>
+                    <option value="บุคลากร">บุคลากร</option>
+                    <option value="บุคคลภายนอก">ผู้ใช้บริการทั่วไป</option>
                 </select>
 
                 <div class="rating-group">
                     <div class="rating-title">ความรวดเร็วในการให้บริการ</div>
-                    <div class="rating-options">
-                        <input type="radio" name="speed" value="1" id="s1" required><label for="s1">1</label>
-                        <input type="radio" name="speed" value="2" id="s2"><label for="s2">2</label>
-                        <input type="radio" name="speed" value="3" id="s3"><label for="s3">3</label>
-                        <input type="radio" name="speed" value="4" id="s4"><label for="s4">4</label>
-                        <input type="radio" name="speed" value="5" id="s5"><label for="s5">5</label>
+                    <div class="star-rating">
+                        <input type="radio" name="speed" id="s5" value="5" required><label for="s5">★</label>
+                        <input type="radio" name="speed" id="s4" value="4"><label for="s4">★</label>
+                        <input type="radio" name="speed" id="s3" value="3"><label for="s3">★</label>
+                        <input type="radio" name="speed" id="s2" value="2"><label for="s2">★</label>
+                        <input type="radio" name="speed" id="s1" value="1"><label for="s1">★</label>
                     </div>
                 </div>
 
                 <div class="rating-group">
                     <div class="rating-title">ความถูกต้องและครบถ้วน</div>
-                    <div class="rating-options">
-                        <input type="radio" name="accuracy" value="1" id="a1" required><label for="a1">1</label>
-                        <input type="radio" name="accuracy" value="2" id="a2"><label for="a2">2</label>
-                        <input type="radio" name="accuracy" value="3" id="a3"><label for="a3">3</label>
-                        <input type="radio" name="accuracy" value="4" id="a4"><label for="a4">4</label>
-                        <input type="radio" name="accuracy" value="5" id="a5"><label for="a5">5</label>
+                    <div class="star-rating">
+                        <input type="radio" name="accuracy" id="a5" value="5" required><label for="a5">★</label>
+                        <input type="radio" name="accuracy" id="a4" value="4"><label for="a4">★</label>
+                        <input type="radio" name="accuracy" id="a3" value="3"><label for="a3">★</label>
+                        <input type="radio" name="accuracy" id="a2" value="2"><label for="a2">★</label>
+                        <input type="radio" name="accuracy" id="a1" value="1"><label for="a1">★</label>
                     </div>
                 </div>
 
                 <div class="rating-group">
                     <div class="rating-title">ความสุภาพและจิตบริการ</div>
-                    <div class="rating-options">
-                        <input type="radio" name="service" value="1" id="v1" required><label for="v1">1</label>
-                        <input type="radio" name="service" value="2" id="v2"><label for="v2">2</label>
-                        <input type="radio" name="service" value="3" id="v3"><label for="v3">3</label>
-                        <input type="radio" name="service" value="4" id="v4"><label for="v4">4</label>
-                        <input type="radio" name="service" value="5" id="v5"><label for="v5">5</label>
+                    <div class="star-rating">
+                        <input type="radio" name="service" id="v5" value="5" required><label for="v5">★</label>
+                        <input type="radio" name="service" id="v4" value="4"><label for="v4">★</label>
+                        <input type="radio" name="service" id="v3" value="3"><label for="v3">★</label>
+                        <input type="radio" name="service" id="v2" value="2"><label for="v2">★</label>
+                        <input type="radio" name="service" id="v1" value="1"><label for="v1">★</label>
                     </div>
                 </div>
 
-                <textarea class="form-control mb-4" name="comment" id="comment" 
-                          rows="2" placeholder="ข้อเสนอแนะเพิ่มเติม..."></textarea>
+                <textarea class="form-control mb-3" name="comment" id="comment" rows="2" placeholder="ข้อเสนอแนะเพิ่มเติม..."></textarea>
 
-                <button class="submit-btn" type="submit">
-                    ส่งแบบประเมิน
-                </button>
+                <button class="submit-btn" type="submit">ส่งแบบประเมิน</button>
             </div>
         </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="card.js"></script>
 </body>
 
