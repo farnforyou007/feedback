@@ -1,4 +1,4 @@
-{/* <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> */}
+{/* <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> */ }
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbwb7SuSZszPyorEu8106QfEylzNs7EZyFWhQ2qANJXDamkL2MSCkALTIgqsRZoiD2c/exec';
 const postIdInput = document.getElementById('post-username');
@@ -76,7 +76,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 //                             });
 //                             document.getElementById("dataForm").reset();
 //                         })
-                        
+
 //                         .catch (error => {
 //                                 //console.error('POST Error:', error);
 //                                 Swal.fire({
@@ -134,19 +134,19 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
                         "Prefer": "return=minimal"
                     }
                 })
-                .then(response => {
-                    Swal.fire({
-                        title: 'บันทึกข้อมูลสำเร็จ!',
-                        text: 'ขอบคุณสำหรับการประเมินครับ',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
+                    .then(response => {
+                        Swal.fire({
+                            title: 'บันทึกข้อมูลสำเร็จ!',
+                            text: 'ขอบคุณสำหรับการประเมินครับ',
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+                        document.getElementById("dataForm").reset();
+                        form.classList.remove('was-validated'); // ล้างสถานะ validation
+                    })
+                    .catch(error => {
+                        Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
                     });
-                    document.getElementById("dataForm").reset();
-                    form.classList.remove('was-validated'); // ล้างสถานะ validation
-                })
-                .catch(error => {
-                    Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
-                });
             }
             form.classList.add('was-validated');
         }, false);
@@ -209,7 +209,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 function fetchData() {
     if (searchParams.has('id')) {
         let idParam = searchParams.get('id');
-        
+
         // เปลี่ยนมาดึงจาก Supabase Table 'users'
         axios.get(`${SUPABASE_URL}/rest/v1/users?id=eq.${idParam}&select=*`, {
             headers: {
@@ -217,17 +217,17 @@ function fetchData() {
                 "Authorization": `Bearer ${SUPABASE_KEY}`
             },
         })
-        .then(response => {
-            if (response.data.length > 0) {
-                displayData(response.data);
-                Swal.close();
-            } else {
-                Swal.fire({ title: 'Error!', text: 'ไม่พบข้อมูลผู้ถูกประเมิน', icon: 'error' });
-            }
-        })
-        .catch(error => {
-            Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
-        });
+            .then(response => {
+                if (response.data.length > 0) {
+                    displayData(response.data);
+                    Swal.close();
+                } else {
+                    Swal.fire({ title: 'Error!', text: 'ไม่พบข้อมูลผู้ถูกประเมิน', icon: 'error' });
+                }
+            })
+            .catch(error => {
+                Swal.fire({ title: 'Error!', text: error.message, icon: 'error' });
+            });
     } else {
         document.getElementById("dataForm").style.display = "none";
         Swal.fire({ title: 'Error!', text: 'กรุณาระบุ ID ผู้ถูกประเมิน', icon: 'error' });
@@ -251,9 +251,14 @@ function displayData(posts) {
     postIdInput.value = post.fullname;
 
     // หากต้องการแสดงข้อมูลอื่นๆ เช่น title และ body
+    // container.insertAdjacentHTML('beforeend', `
+    //     <span class="fs-5 fw-bold">${post.fullname}</span>
+    //     <p class="fs-6 text-black-50">${post.position}</p>
+    // `);
+    // เปลี่ยนจากแบบเดิม เป็นแบบนี้เพื่อให้เข้ากับดีไซน์ใหม่
     container.insertAdjacentHTML('beforeend', `
-        <span class="fs-5 fw-bold">${post.fullname}</span>
-        <p class="fs-6 text-black-50">${post.position}</p>
-    `);
+    <h2 class="text-xl font-bold text-gray-800">${post.fullname}</h2>
+    <p class="text-sm text-gray-500">${post.position}</p>
+`);
 }
 
